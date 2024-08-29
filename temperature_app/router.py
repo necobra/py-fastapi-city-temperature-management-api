@@ -25,7 +25,7 @@ async def read_temperatures(
     return temperatures
 
 
-@router.post("/temperatures/update", response_model=List[schemas.Temperature])
+@router.post("/temperatures/update")
 async def update_temperatures(db: AsyncSession = Depends(get_db)):
     cities = await city_crud.get_cities_list(db)
 

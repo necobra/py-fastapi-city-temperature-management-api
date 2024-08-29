@@ -18,11 +18,16 @@ async def get_temperatures_list(
 async def create_temperatures(
     db: AsyncSession, temperatures: list[schemas.TemperatureCreate]
 ):
-    db_temperatures = []
-    for temperature in temperatures:
-        db_temperature = models.Temperature(**temperature.dict())
-        db_temperatures.append(db_temperature)
-        db.add(db_temperature)
+    db_temperatures = [
+        models.Temperature(**temperature.dict())
+        for temperature in temperatures
+    ]
+
+    db.add_all(db_temperatures)
+
     await db.commit()
-    await db.refresh(db_temperatures)
+
+    for temperature in db_temperatures:
+        await db.refresh(temperature)
+
     return db_temperatures
